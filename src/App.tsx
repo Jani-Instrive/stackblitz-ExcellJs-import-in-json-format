@@ -1,3 +1,5 @@
+
+
 import { FC, useRef } from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import * as ExcelJS from 'exceljs';
@@ -11,7 +13,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
   
     if (fileInputRef.current && fileInputRef.current.files.length > 0) {
       const file = fileInputRef.current.files[0];
-      
+  
       const reader = new FileReader();
       reader.readAsArrayBuffer(file);
       reader.onload = async () => {
@@ -24,17 +26,19 @@ export const App: FC<{ name: string }> = ({ name }) => {
           const sheetData = [];
           worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
             if (rowNumber === 1) {
-              // Skip the first row (header row)
               return;
             }
-    
+  
             const question = row.getCell(1).value;
-            const acceptance = row.getCell(2).value;
+            if (question === 'Rfp questions' || question === 'Terms & Conditions' || question === 'Expenses' || question === 'Travel / Hotel categories:' || question === 'Travel class' || question === 'Hotel' || question === 'Taxes' || question === 'Assumptions & Exclusions' || question === 'Outsourcing') {
+              return;
+            }
+            const acceptanceCellValue = row.getCell(2).value;
             const comment = row.getCell(3).value;
-    
+  
             const rowData = {
               question: question ? question.toString() : '',
-              acceptance: acceptance === true ? true : false,
+              acceptance: acceptanceCellValue ? true : false,
               comment: comment ? comment.toString() : ''
             };
             sheetData.push(rowData);
@@ -55,8 +59,10 @@ export const App: FC<{ name: string }> = ({ name }) => {
         console.log('JSON data:', jsonData);
       };
     }
-  }; 
+  };
   
+
+
   return (
     <Box>
       <form onSubmit={handleSubmit}>
