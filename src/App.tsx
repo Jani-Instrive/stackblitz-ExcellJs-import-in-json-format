@@ -8,7 +8,7 @@ export const App: FC<{ name: string }> = ({ name }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (fileInputRef.current && fileInputRef.current.files.length > 0) {
       const file = fileInputRef.current.files[0];
       
@@ -18,39 +18,45 @@ export const App: FC<{ name: string }> = ({ name }) => {
         const buffer = reader.result as any;
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.load(buffer);
-        const worksheet = workbook.worksheets[0];
-        
-        const jsonData = [];
-        worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
-          if (rowNumber === 1) {
-          } else {
-            const rowValues = row.values as any;
-            const rowObject = {};
-            rowValues.forEach((value, index) => {
-              const headerCellValue = worksheet.getRow(1).getCell(index).value;
-              if (headerCellValue && typeof headerCellValue === 'string') {
-                const key = headerCellValue; // Ensure the key is a string
-                let cellValue = value;
-        
-                // Convert cell value to string if necessary
-                if (typeof cellValue === 'number' || cellValue instanceof Date || typeof cellValue === 'boolean') {
-                  cellValue = cellValue.toString();
-                } else if (typeof cellValue !== 'string') {
-                  cellValue = ''; // Default to empty string for unsupported types
-                }
-        
-                rowObject[key] = cellValue;
-              }
-            });
-            jsonData.push(rowObject);
-          }
-        });
-
+  
+        // Function to process a worksheet
+        const processSheet = (worksheet) => {
+          const sheetData = [];
+          worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
+            if (rowNumber === 1) {
+              // Skip the first row (header row)
+              return;
+            }
+    
+            const question = row.getCell(1).value;
+            const acceptance = row.getCell(2).value;
+            const comment = row.getCell(3).value;
+    
+            const rowData = {
+              question: question ? question.toString() : '',
+              acceptance: acceptance === true ? true : false,
+              comment: comment ? comment.toString() : ''
+            };
+            sheetData.push(rowData);
+          });
+          return sheetData;
+        };
+  
+        // Process each required worksheet
+        const preliminaryInfo = workbook.getWorksheet('Preliminary Information') ? processSheet(workbook.getWorksheet('Preliminary Information')) : [];
+        const pricing = workbook.getWorksheet('Pricing') ? processSheet(workbook.getWorksheet('Pricing')) : [];
+        const otherKeyInfo = workbook.getWorksheet('Other Key Information') ? processSheet(workbook.getWorksheet('Other Key Information')) : [];
+  
+        const jsonData = {
+          preliminary_info: preliminaryInfo,
+          pricing: pricing,
+          other_key_info: otherKeyInfo
+        };
         console.log('JSON data:', jsonData);
       };
     }
-  };
-
+  }; 
+  
   return (
     <Box>
       <form onSubmit={handleSubmit}>
