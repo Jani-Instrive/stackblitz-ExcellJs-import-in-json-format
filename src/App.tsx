@@ -21,22 +21,26 @@ export const App: FC<{ name: string }> = ({ name }) => {
         const workbook = new ExcelJS.Workbook();
         await workbook.xlsx.load(buffer);
 
-        // Function to process a worksheet
+        const toSnakeCase = (str) => {
+          return str.toLowerCase().replace(/[\s]+/g, '_').replace(/[^\w_]+/g, '');
+        };
+        
         const processSheet = (worksheet) => {
           const sheetData = [];
           worksheet.eachRow({ includeEmpty: false }, (row, rowNumber) => {
             if (rowNumber === 1) {
               return;
             }
-
+        
             const question = row.getCell(1).value;
             if (question === 'Rfp questions' || question === 'Terms & Conditions' || question === 'Expenses' || question === 'Travel / Hotel categories:' || question === 'Travel class' || question === 'Hotel' || question === 'Taxes' || question === 'Assumptions & Exclusions' || question === 'Outsourcing') {
               return;
             }
             const acceptanceCellValue = row.getCell(2).value;
             const comment = row.getCell(3).value;
-
+        
             const rowData = {
+              name: question ? toSnakeCase(question.toString()) : '',
               question: question ? question.toString() : '',
               acceptance: acceptanceCellValue ? true : false,
               comment: comment ? comment.toString() : ''
@@ -45,8 +49,6 @@ export const App: FC<{ name: string }> = ({ name }) => {
           });
           return sheetData;
         };
-
-        // Process each required worksheet
         const preliminaryInfo = workbook.getWorksheet('Preliminary Information') ? processSheet(workbook.getWorksheet('Preliminary Information')) : [];
         const pricing = workbook.getWorksheet('Pricing') ? processSheet(workbook.getWorksheet('Pricing')) : [];
         const otherKeyInfo = workbook.getWorksheet('Other Key Information') ? processSheet(workbook.getWorksheet('Other Key Information')) : [];
@@ -69,13 +71,13 @@ export const App: FC<{ name: string }> = ({ name }) => {
           "Regulatory",
           "Tax",
           "Other"
-        ]; // Replace with actual sheet names
+        ];
         const scopeOfWork = scopeOfWorkSheets.map(sheetName => {
           return {
             [sheetName]: workbook.getWorksheet(sheetName) ? processSheet(workbook.getWorksheet(sheetName)) : []
           };
         });
-        const templateValue = {
+        const jsonData = {
           preliminary_info: preliminaryInfo,
           pricing: pricing,
           other_key_info: otherKeyInfo,
@@ -83,7 +85,8 @@ export const App: FC<{ name: string }> = ({ name }) => {
             ...scopeOfWork
           ]
         };
-        console.log('JSON data:', templateValue);
+        
+        console.log('JSON data:', jsonData);
       };
     }
   };
