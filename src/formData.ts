@@ -53,7 +53,7 @@ export const dataArray = [
       label: 'Contract drafting',
     },
     {
-      key: 'contract_123review',
+      key: 'contract_review',
       label: 'Contract review',
     },
     {
@@ -67,5 +67,134 @@ export const dataArray = [
     {
       key: 'other',
       label: 'Other',
+    },
+    //Other key information
+    {
+        key: "key_team_members",
+        label: "Key team members (title, role, years of experience, project role) Location of Lead partner"
+    },
+    {
+        key: "add_biography",
+        label: "Biographies"
+    },
+    // {
+    //     key: "with_picture",
+    //     label: "With picture"
+    // },
+    // {
+    //     key: "max_one_page",
+    //     label: "Not more than 1 page"
+    // },
+    {
+        key: "staffing",
+        label: "Staffing and project management"
+    },
+    //
+    {
+        key: "diversity",
+        label: "Diversity, Equity & Inclusion (DEI)"
+    },
+    {
+        key: "",
+        label: "Team lead must meet above DEI requirement"
+    },
+    {
+        key: "minority_lead",
+        label: "Key team members: at least"
+    },
+    {
+        key: "minority_percentage",
+        label: "must meet DEI requirement"
+    },
+    {
+        key: "other",
+        label: "Other"
+    },
+    {
+        key: "credentials",
+        label: "Credentials (by order of relevance/most recent first)"
+    },
+    {
+        key: "",
+        label: "Disaggregation of services (outsourcing and/or (legal) technology related)"
+    },
+    {
+        key: "technology",
+        label: "Technology"
+    },
+    {
+        key: "description",
+        label: "Description/name of technology and objective"
+    },
+    {
+        key: "other",
+        label: "Other"
+    },
+    {
+        key: "bidders_name",
+        label: "Name of service provider(s) and scope of work"
+    },
+    {
+        key: "other",
+        label: "Other"
+    },
+    {
+        key: "expected_efficiency",
+        label: "Expected efficiency/client monetary savings"
+    },
+    {
+        key: "other",
+        label: "Other"
+    },
+    {
+        key: "usp",
+        label: "What is your USP (max 300 characters) ?"
+    },
+    {
+        key: "additional_info",
+        label: "Request for additional information"
+    },
+    {
+        key: "sufficient_info",
+        label: "We believe information provided in RFP to be sufficient to provide fee proposal and won't entertain questions by email or any request for a call"
+    },
+    {
+        key: "clarification_medium",
+        label: "We will entertain requests for clarification by"
+    },
+    {
+        key: "email_questions",
+        label: "email"
+    },
+    {
+        key: "email_video",
+        label: "video/audio conference"
+    },
+    {
+        key: "both",
+        label: "both"
+    },
+    {
+        key: "fee_proposal_presentation",
+        label: "Presentation of fee proposals"
+    },
+    {
+        key: "call_bidders",
+        label: "We will organise meeting/call with (select) bidders to present fee proposal and answer questions"
+    },
+    {
+        key: "video",
+        label: "Video"
+    },
+    {
+        key: "provide_video",
+        label: "Legal service providers to provide short video in addition to information in this section “Other key information” (max 2 min)"
+    },
+    {
+        key: "other",
+        label: "Other"
     }
+    
   ];
+  
+  

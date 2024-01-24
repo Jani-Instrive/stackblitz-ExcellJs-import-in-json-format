@@ -141,8 +141,6 @@ export const App: FC<{ name: string }> = ({ name }) => {
       };
     }
   };
-// console.log("dataArray--->",dataArray)
-
 
   return (
     <Box>
