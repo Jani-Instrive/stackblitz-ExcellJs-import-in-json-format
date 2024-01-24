@@ -4,6 +4,7 @@ import { FC, useRef } from 'react';
 import { Box, Button, Grid, Typography } from '@mui/material';
 import * as ExcelJS from 'exceljs';
 import './style.css';
+import {dataArray} from './formData'
 
 export const App: FC<{ name: string }> = ({ name }) => {
   const fileInputRef = useRef(null);
@@ -77,6 +78,56 @@ export const App: FC<{ name: string }> = ({ name }) => {
             [sheetName]: workbook.getWorksheet(sheetName) ? processSheet(workbook.getWorksheet(sheetName)) : []
           };
         });
+
+        // const updateJsonDataWithArrayKeys = (jsonData, dataArray) => {
+        //   const updatedJsonData = JSON.parse(JSON.stringify(jsonData)); // Deep copy jsonData to avoid direct mutation
+        //   for (const section in updatedJsonData) {
+        //     if (Array.isArray(updatedJsonData[section])) {
+        //       updatedJsonData[section].forEach(item => {
+        //         const matchedDataArrayItem = dataArray.find(data => data.label === item.question);
+        //         if (matchedDataArrayItem) {
+        //           item.name = matchedDataArrayItem.key;
+        //         }else{
+        //           item.name = ""
+        //         }
+        //       });
+        //     }
+        //   }
+        //   return updatedJsonData;
+        // };
+
+        const updateJsonDataWithArrayKeys = (jsonData, dataArray) => {
+          const updatedJsonData = JSON.parse(JSON.stringify(jsonData)); // Deep copy jsonData to avoid direct mutation
+      
+          const updateSection = (section) => {
+            section.forEach(item => {
+              const matchedDataArrayItem = dataArray.find(data => data.label === item.question);
+              if (matchedDataArrayItem) {
+                item.name = matchedDataArrayItem.key;
+              } else {
+                item.name = ""
+              }
+            });
+          };
+      
+          for (const section in updatedJsonData) {
+            if (Array.isArray(updatedJsonData[section])) {
+              updateSection(updatedJsonData[section]);
+              updatedJsonData[section].forEach(obj => {
+                Object.values(obj).forEach(innerArray => {
+                  if (Array.isArray(innerArray)) {
+                    updateSection(innerArray);
+                  }
+                });
+              });
+            }
+          }
+      
+          return updatedJsonData;
+        };
+      
+      
+
         const jsonData = {
           preliminary_info: preliminaryInfo,
           pricing: pricing,
@@ -85,12 +136,12 @@ export const App: FC<{ name: string }> = ({ name }) => {
             ...scopeOfWork
           ]
         };
-        
-        console.log('JSON data:', jsonData);
+        const updatedJsonData = updateJsonDataWithArrayKeys(jsonData, dataArray);
+        console.log('JSON data:', updatedJsonData);
       };
     }
   };
-
+// console.log("dataArray--->",dataArray)
 
 
   return (
